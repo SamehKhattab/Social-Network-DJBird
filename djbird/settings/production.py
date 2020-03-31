@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'crispy_forms',
     'tweetsapp',
+    'hashtags',
     'rest_framework',
     'accounts',
     'django_filters',
@@ -59,6 +60,9 @@ MIDDLEWARE_CLASSES = (
 )
 
 ROOT_URLCONF = 'djbird.urls'
+LOGIN_URL = "/login"
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = LOGIN_REDIRECT_URL
 
 TEMPLATES = [
     {

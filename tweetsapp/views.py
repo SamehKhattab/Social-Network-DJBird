@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView
@@ -10,7 +10,19 @@ from django.core.urlresolvers import reverse
 from django.db.models import Q
 from .models import SingleTweet
 from .forms import TweetModelForm
+from django.views.generic import View
+from django.http import HttpResponseRedirect
+
 # Create your views here.
+
+
+class RetweetView(View):
+	def get(self, request, pk, *args, **kwargs):
+		tweet = get_object_or_404(SingleTweet, pk=pk)
+		if request.user.is_authenticated():
+			new_tweet = SingleTweet.objects.retweet(request.user, tweet)
+			return HttpResponseRedirect("/")
+		return HttpResponseRedirect(tweet.get_absolute_url())
 
 
 class TweetDeleteView(DeleteView):

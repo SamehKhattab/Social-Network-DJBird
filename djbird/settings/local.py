@@ -41,7 +41,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     
     'crispy_forms',
-    
+    'hashtags',
     'tweetsapp',
     'rest_framework',
     'accounts',
@@ -65,6 +65,9 @@ MIDDLEWARE_CLASSES = (
 )
 
 ROOT_URLCONF = 'djbird.urls'
+LOGIN_URL = "/login"
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = LOGIN_REDIRECT_URL
 
 TEMPLATES = [
     {
@@ -124,6 +127,11 @@ STATICFILES_DIRS = (
 )
 
 STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_serve")
+
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
