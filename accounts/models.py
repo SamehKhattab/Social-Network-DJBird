@@ -3,6 +3,8 @@ from django.conf import settings
 from django.contrib.auth.models import UserManager
 from django.core.urlresolvers import reverse_lazy 
 from django.db.models.signals import post_save 
+from django.utils.text import slugify
+
 
 
 # Create your models here.
@@ -49,12 +51,24 @@ class UserProfileManager(models.Manager):
 class UserProfile(models.Model):
     user        = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='profile')
     following   = models.ManyToManyField(settings.AUTH_USER_MODEL,blank=True , related_name='followed_by')
-
+    slug        = models.SlugField(null=True, blank=True)
+    img         = models.ImageField(default='profile_img/blueprofile2.png', upload_to='profile_img', null=True, blank=True)
+    bio         = models.TextField(null=True, blank=True)
 
     objects = UserProfileManager()
 
+
+
     def __unicode__(self):
         return str(self.following.all().count())
+
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.user)
+        super(UserProfile, self).save(*args, **kwargs)
+
+
 
     def get_following(self):
         users = self.following.all()
@@ -65,6 +79,9 @@ class UserProfile(models.Model):
 
     def get_absolute_url(self):
         return reverse_lazy("profiles:detail", kwargs={"username":self.user.username})  
+
+    def get_profile_url(self):
+        return reverse_lazy("profiles:userprofile", kwargs={"slug":self.slug}) 
 
 def post_save_user_receiver(sender, instance, created, *args, **kwargs):
     print(instance)

@@ -21,6 +21,18 @@ class LikeToggleAPIView(APIView):
         return Response({"message": message}, status=400)
 
 
+class UnLikeToggleAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    def get(self, request, pk, format=None):
+        tweet_qs = SingleTweet.objects.filter(pk=pk)
+        message = "Not allowed"
+        if request.user.is_authenticated():
+            is_unliked = SingleTweet.objects.unlike_toggle(request.user, tweet_qs.first())
+            return Response({"unliked": is_unliked})
+        
+        return Response({"message": message}, status=400)
+
+
 class RetweetAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     def get(self, request, pk, format=None):
@@ -34,6 +46,7 @@ class RetweetAPIView(APIView):
                 return Response(data)
             message = "Error"
         return Response(None, status=400)
+
 
 class SingleTweetCreateAPIView(generics.CreateAPIView):
     serializer_class = SingleTweetModelSerializer
@@ -58,6 +71,7 @@ class SingleTweetDetailAPIView(generics.ListAPIView):
             qs1 = parent_obj.get_children()
             qs = (qs | qs1).distinct().extra(select={"parent_id_null": 'parent_id IS NULL'})
         return qs.order_by("-parent_id_null", '-timestamp')
+
 
 class SingleTweetListAPIView(generics.ListAPIView):
 

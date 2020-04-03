@@ -23,13 +23,19 @@
   
   </head>
   <body>
-          {% include "navbar.html"%}
+      
+      {% include "navbar.html"%}
+
+
 
     <div class='container'>
       {% block content %}
       {% endblock content %}
+
     
     </div>
+    {% block body%}
+      {% endblock %}
 
     {% include "reply-modal.html"%}
 
@@ -66,7 +72,7 @@
      var initialUrl = tweetContainer.attr("data-url") ||  "/api/tweet/";
 
 
-     $(document.body).on("click", ".tweet-like", function(e){
+    $(document.body).on("click", ".tweet-like", function(e){
     e.preventDefault()
     var this_ = $(this)
     var tweetId = this_.attr("data-id")
@@ -77,10 +83,13 @@
       success: function(data){
         if(data.liked){
           this_.text("Liked")
+
         }
         else{ 
-          this_.text("Unliked")
+          this_.text("Like")
         }
+  //     location.reload(true)
+ 
       },
       error: function(data){
         console.log("error")
@@ -88,6 +97,34 @@
       }
     })
   })
+
+
+ $(document.body).on("click", ".tweet-unlike", function(e){
+    e.preventDefault()
+    var this1_ = $(this)
+    var tweetId = this1_.attr("data-id")
+    var unlikedUrl = '/api/tweet/' + tweetId + "/unlike/"
+    $.ajax({
+      method:"GET",
+      url: unlikedUrl, 
+      success: function(data){
+        if(data.unliked){
+          this1_.text("Unliked") 
+        }
+        else{ 
+          this1_.text("Unlike")
+        }
+      //  location.reload(true)
+      },
+      error: function(data){
+        console.log("error")
+        console.log(data)
+      }
+    })
+  })
+
+
+
 
 
 
@@ -177,11 +214,15 @@
       
       var verb = 'Like'
       if (tweetValue.did_like){
-        verb = 'Unlike'
+        verb = 'Liked'
       }
       
+       var unlikeverb = 'Unlike'
+        if (tweetValue.did_unlike){
+          unlikeverb = 'Unliked'
+        }
 
-      tweetContent = "<span class='content'>"+tweetValue.content + "</span><br/> via <a href='"+ tweetValue.user.url + "'>" + tweetValue.user.username + " </a> | " + tweetValue.date_display + " | " + tweetValue.timesince + " | " + "<a href='/tweet/" + tweetValue.id + "'>View</a> | " +"<a class='retweetBtn' href= '/tweet/"+ tweetValue.id + "/retweet/'>Retweet</a>" + "  |  <a href='#' class='tweet-like' data-id='" +tweetValue.id  +"''>" + verb + " (" + tweetValue.likes +")</a>" + "  |  <a href='#' class='tweet-reply' data-user='"+ tweetValue.user.username + "'data-id='" +replyId  +"''>Reply</a>"
+      tweetContent = "<span class='content'>"+tweetValue.content + "</span><br/> via <a href='"+ tweetValue.user.url + "'>" + tweetValue.user.username + " </a> | " + tweetValue.date_display + " | " + tweetValue.timesince + " | " + "<a href='/tweet/" + tweetValue.id + "'>View</a> | " +"<a class='retweetBtn' href= '/tweet/"+ tweetValue.id + "/retweet/'>Retweet</a>" + "  |  <a href='#' class='tweet-like' data-id='" +tweetValue.id  +"''>" + verb + " (" + tweetValue.likes +")</a>" + "  |  <a href='#' class='tweet-unlike' data-id='" +tweetValue.id  +"''>" + unlikeverb + " (" + tweetValue.unlikes +")</a>"+ "  |  <a href='#' class='tweet-reply' data-user='"+ tweetValue.user.username + "'data-id='" +replyId  +"''>Reply</a>"
 
       if (preContent){
         container = openingContainerDiv + "<div class=\"media-body\">" + preContent +tweetContent + "</div></div><hr/>"

@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from django.views.generic import View
 from django.views.generic.edit import FormView
 from .models import UserProfile
-from .forms import UserRegisterForm
+from .forms import UserRegisterForm, UserForm, ProfileForm
 from django.contrib.auth import get_user_model, authenticate, login, logout 
 
 # Create your views here.
@@ -75,3 +75,37 @@ def loginPage(request):
 def logoutPage(request):
     logout(request)
     return redirect('login')
+
+
+def UserProfileView(request, slug):
+    UserProfileView = get_object_or_404(UserProfile, slug=slug)
+    context = {
+    'UserProfileView' : UserProfileView,
+    }
+    return render(request, 'accounts/profile.html', context) 
+
+
+def EditUserProfileView(request, slug):
+    EditUserProfileView = get_object_or_404(UserProfile, slug=slug)
+    if request.method == 'POST':
+        user_form = UserForm(request.POST, instance=request.user)
+        profile_form = ProfileForm(request.POST, request.FILES, instance=EditUserProfileView)
+        
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            new_profile = profile_form.save()
+            #new_profile.user = request.user
+            #new_profile.save()
+
+            return redirect('me')
+    else: 
+        user_form = UserForm(instance=request.user)
+        profile_form = ProfileForm(instance=EditUserProfileView)
+
+
+    context = {
+    'user_form' : user_form,
+    'profile_form' : profile_form,
+    }
+
+    return render(request, 'accounts/edit_profile.html', context) 

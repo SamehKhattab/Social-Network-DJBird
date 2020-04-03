@@ -29,16 +29,36 @@ class SingelTweetManager(models.Manager):
 		if user in tweet_obj.liked.all():
 			is_liked = False
 			tweet_obj.liked.remove(user)
+		#	tweet_obj.unliked.add(user)
+
 		else: 
 			is_liked = True
 			tweet_obj.liked.add(user)
+			tweet_obj.unliked.remove(user)
+
+
 		return is_liked   
+
+	def unlike_toggle(self, user, tweet_obj):
+		if user in tweet_obj.unliked.all():
+			is_unliked = False
+			tweet_obj.unliked.remove(user)
+		#	tweet_obj.liked.add(user)
+
+		else: 
+			is_unliked = True
+			tweet_obj.unliked.add(user)
+			tweet_obj.liked.remove(user)
+
+		return is_unliked
+
 
 class SingleTweet(models.Model):
 	parent 		= models.ForeignKey("self", blank=True, null=True)
 	user		= models.ForeignKey(settings.AUTH_USER_MODEL)
 	content 	= models.CharField(max_length=250)
 	liked		= models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name='liked')
+	unliked		= models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name='unliked')
 	reply		= models.BooleanField(verbose_name='Is a reply?', default=False)
 	updated		= models.DateTimeField(auto_now=True)
 	timestamp	= models.DateTimeField(auto_now_add=True)

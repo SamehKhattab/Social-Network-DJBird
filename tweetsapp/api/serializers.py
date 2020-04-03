@@ -12,6 +12,8 @@ class ParentTweetModelSerializer(serializers.ModelSerializer):
     timesince = serializers.SerializerMethodField()
     likes = serializers.SerializerMethodField()
     did_like = serializers.SerializerMethodField()
+    unlikes = serializers.SerializerMethodField()
+    did_unlike = serializers.SerializerMethodField()
 
     class Meta:
         model = SingleTweet
@@ -24,6 +26,8 @@ class ParentTweetModelSerializer(serializers.ModelSerializer):
         'timesince', 
         'likes',
         'did_like',
+        'unlikes',
+        'did_unlike',
     
         ]
 
@@ -35,6 +39,8 @@ class ParentTweetModelSerializer(serializers.ModelSerializer):
             if user.is_authenticated():
                 if user in obj.liked.all():
                     return True
+                elif user in obj.unliked.all():
+                    return False
         except: 
             pass
         return False
@@ -44,12 +50,32 @@ class ParentTweetModelSerializer(serializers.ModelSerializer):
     def get_likes(self, obj):
         return obj.liked.all().count() 
 
+
+    def get_did_unlike(self, obj):
+        request = self.context.get("request")
+        try: 
+            user = request.user
+            if user.is_authenticated():
+                if user in obj.unliked.all():
+                    return True
+                elif user in obj.liked.all():
+                    return False
+        except: 
+            pass
+        return False
+
+
+
+    def get_unlikes(self, obj):
+        return obj.unliked.all().count() 
+
     
     def get_date_display(self, obj):
         return obj.timestamp.strftime("%b %d, %Y | %I:%M %p")
 
     def get_timesince(self, obj):
         return timesince(obj.timestamp) + "  ago"
+
 
 
 
@@ -61,6 +87,8 @@ class SingleTweetModelSerializer(serializers.ModelSerializer):
     parent = ParentTweetModelSerializer(read_only=True)
     likes = serializers.SerializerMethodField()
     did_like = serializers.SerializerMethodField()
+    unlikes = serializers.SerializerMethodField()
+    did_unlike = serializers.SerializerMethodField()
  
 
     class Meta:
@@ -76,23 +104,45 @@ class SingleTweetModelSerializer(serializers.ModelSerializer):
         'parent', 
         'likes',
         'did_like',
+        'unlikes',
+        'did_unlike',
         'reply',
 
         ]
 
+
     def get_did_like(self, obj):
         request = self.context.get("request")
-        try:
+        try: 
             user = request.user
             if user.is_authenticated():
                 if user in obj.liked.all():
                     return True
+                elif user in obj.unliked.all():
+                    return False
         except: 
             pass
         return False
 
     def get_likes(self, obj):
         return obj.liked.all().count() 
+
+
+    def get_did_unlike(self, obj):
+        request = self.context.get("request")
+        try: 
+            user = request.user
+            if user.is_authenticated():
+                if user in obj.unliked.all():
+                    return True
+                elif user in obj.liked.all():
+                    return False
+        except: 
+            pass
+        return False
+
+    def get_unlikes(self, obj):
+        return obj.unliked.all().count() 
 
     def get_date_display(self, obj):
         return obj.timestamp.strftime("%b %d, %Y | %I:%M %p")

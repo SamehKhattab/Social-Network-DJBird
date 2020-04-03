@@ -35,11 +35,12 @@ urlpatterns = [
     url(r'^api/tweet/', include('tweetsapp.api.urls', namespace='tweet-api')),
     url(r'^api/', include('accounts.api.urls', namespace='profiles-api')),
     url(r'^register/$', UserRegisterView.as_view(), name='register'),
-    url(r'^', include('accounts.urls', namespace='profiles')),    
-]
+    url(r'^', include('accounts.urls', namespace='profiles')),  
 
-if settings.DEBUG:
-    urlpatterns += (static(settings.STATIC_URL, document_root=settings.STATIC_ROOT))
+
+        ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
 
 
 

@@ -5,4 +5,5 @@ djangorestframework==3.5.3
 Markdown==2.6.7
 mysql-connector==2.2.9
 mysqlclient==1.4.6
+Pillow==6.2.2
 pytz==2019.3

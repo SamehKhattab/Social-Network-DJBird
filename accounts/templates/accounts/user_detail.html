@@ -4,8 +4,6 @@
 
 <script type="text/javascript">
 
-    
-
     $(document).ready(function(){
         
         loadTweetContainer("tweet-container")
@@ -26,8 +24,6 @@
             {%if following%} Unfollow {%else%} Follow {%endif%}</a>
         </p>
 
-        
-
         <hr/>
 
         <h1>Following <small> {{ object.profile.get_following.count}}</small></h1>
@@ -46,7 +42,6 @@
         <h4>Not followed by any users</h4>
         {% endfor %}
 
-        
 
     </div>
     <div class="col-9"> 
@@ -58,9 +53,8 @@
                     <a href='#' id='loadmore'>Load More Tweets</a>
 
 
-
-
     </div>
+    
 </div>
 
 {% endblock content %}

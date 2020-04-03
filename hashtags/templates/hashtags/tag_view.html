@@ -9,16 +9,14 @@
 
 
 {% block script %} 
-
 <script type="text/javascript">
 
     $(document).ready(function(){
         
         loadTweetContainer("tweet-container")
-
     });
- 
 </script>
+
 
 {% endblock script %}
 
@@ -30,22 +28,22 @@
                 <p class='lead'>Results for {{ request.GET.q }}</p>
                 <hr/>
                 {% endif %} 
-            </div>
-            <div class='col-9'>
-                <h1>Tweets</h1>
+                    </div>
+                    <div class='col-9'>
+                    <h1>Tweets</h1>
 
-                {% if not request.GET.q %}
-                <div class=''>
+                     {% if not request.GET.q %}
+                     <div class=''>
                     {% include "tweetsapp/form.html" with form=create_form action_url=create_url btn_title='Tweet' form_class='tweet-form' %}
-                </div><br>
+                    </div><br>
                         {% endif %}
 
-                            <div id='tweet-container' data-url='/api/tags/{{obj.tag}}/'>
+                     <div id='tweet-container' data-url='/api/tags/{{obj.tag}}/'>
 
                     </div>
                     <a href='#' id='loadmore'>Load More Tweets</a>
 
-            </div>
+                    </div>
             
 
          </div>
